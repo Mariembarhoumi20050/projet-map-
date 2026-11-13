@@ -63,6 +63,13 @@ document.addEventListener('DOMContentLoaded', function() {
        RÉCUPÉRATION DES ZONES CLIQUABLES
        ======================================== */
     const govAreas = document.querySelectorAll('.gov-area');
+
+    // Gouvernorats dont la fiche existe dans le dossier "gouvernorats".
+    // Pour activer un nouveau gouvernorat : créer sa fiche, puis ajouter son nom ici.
+    const fichesDisponibles = [
+        'tunis', 'ariana', 'ben-arous', 'manouba', 'bizerte', 'nabeul',
+        'sousse', 'monastir', 'mahdia', 'kairouan', 'kef', 'sfax'
+    ];
     
     // Parcourir toutes les zones (une boucle pour chaque gouvernorat)
     govAreas.forEach(area => {
@@ -72,6 +79,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Récupérer la ligne de soulignement correspondante
         const underline = document.querySelector(`.gov-underline[data-gov="${govName}"]`);
+
+        // La fiche de ce gouvernorat existe-t-elle ?
+        const disponible = fichesDisponibles.includes(govName);
+        if (!disponible) {
+            area.classList.add('gov-indisponible');
+        }
+
+        // Texte affiché dans le tooltip
+        const libelle = capitalizeFirstLetter(govName.replace('-', ' ')) +
+            (disponible ? '' : ' — fiche bientôt disponible');
         
         
         /* ========== ÉVÉNEMENT : SURVOL (mouseenter) ========== 
@@ -79,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
         */
         area.addEventListener('mouseenter', function(event) {
             // Afficher le nom du gouvernorat dans le tooltip
-            tooltip.textContent = capitalizeFirstLetter(govName.replace('-', ' '));
+            tooltip.textContent = libelle;
             tooltip.classList.add('show');
             
             // Activer le soulignement
@@ -120,6 +137,11 @@ document.addEventListener('DOMContentLoaded', function() {
         */
         area.addEventListener('click', function(event) {
             event.preventDefault();  // Empêcher le comportement par défaut
+
+            // Pas de fiche : on n'ouvre rien
+            if (!disponible) {
+                return;
+            }
             
             // OUVRIR LA PAGE DU GOUVERNORAT directement
             // '_blank' = nouvel onglet
@@ -131,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Événement : focus (quand on sélectionne avec Tab)
         area.addEventListener('focus', function(event) {
-            tooltip.textContent = capitalizeFirstLetter(govName.replace('-', ' '));
+            tooltip.textContent = libelle;
             tooltip.classList.add('show');
             
             if (underline) {
@@ -166,5 +188,5 @@ document.addEventListener('DOMContentLoaded', function() {
     /* ========== MESSAGES DE CONSOLE ========== */
     console.log('%c🇹🇳 Carte Interactive de la Tunisie', 'font-size: 20px; font-weight: bold; color: #c8102e;');
     console.log('%cCliquez sur les noms des gouvernorats pour voir les détails!', 'font-size: 14px; color: #2c3e50;');
-    console.log('✅ 24 gouvernorats interactifs activés');
+    console.log('✅ ' + fichesDisponibles.length + ' fiches de gouvernorats disponibles sur 24');
 });

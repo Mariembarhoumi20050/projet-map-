@@ -467,6 +467,21 @@ body::before {
     fill: rgba(212, 175, 55, 0.2);
 }
 
+/* Gouvernorat sans fiche : pas de clic, pas de surbrillance */
+.gov-area.gov-indisponible {
+    cursor: not-allowed;
+}
+
+.gov-area.gov-indisponible:hover {
+    fill: rgba(120, 120, 120, 0.15);
+}
+
+.gov-area.gov-indisponible + .gov-underline.active {
+    stroke-width: 0;
+    opacity: 0;
+    animation: none;
+}
+
 .gov-underline {
     stroke: var(--primary-color);
     stroke-width: 0;
